@@ -21,7 +21,7 @@ const Navbar = () => {
   return (
     <div className="container mx-auto px-4">
       {/* Desktop Navbar */}
-      <div className="bg-white rounded-3xl items-center justify-between px-8 py-8 my-8 hidden lg:flex">
+      <div className="bg-white rounded-3xl items-center justify-between px-8 py-8 mt-8 hidden lg:flex">
         <div className="flex items-center justify-between gap-10">
           <div className="flex items-center space-x-1">
             <p className="text-lg">New Drops 🔥</p>
