@@ -1,3 +1,4 @@
+import CategorySlider from "@/components/PageComponents/CategorySlider";
 import Hero from "@/components/PageComponents/Hero";
 import NewDrops from "@/components/PageComponents/NewDrops";
 
@@ -10,6 +11,7 @@ export default function Home() {
       </h1>
       <Hero/>
       <NewDrops/>
+      <CategorySlider/>
     </div>
   );
 }
