@@ -1,6 +1,7 @@
 import CategorySlider from "@/components/PageComponents/CategorySlider";
 import Hero from "@/components/PageComponents/Hero";
 import NewDrops from "@/components/PageComponents/NewDrops";
+import Reviews from "@/components/PageComponents/Reviews";
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
       <Hero/>
       <NewDrops/>
       <CategorySlider/>
+      <Reviews/>
     </div>
   );
 }

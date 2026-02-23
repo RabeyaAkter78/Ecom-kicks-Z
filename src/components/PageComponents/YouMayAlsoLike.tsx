@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable react/no-unescaped-entities */
+
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-
 import Link from "next/link";
 import { useGetProductsQuery } from "@/redux/api/productsApi";
+
 interface Product {
   id: number;
   title: string;
@@ -22,17 +21,22 @@ interface Product {
 }
 
 const YouMayAlsoLike = () => {
+  const { data: products, isLoading, error, refetch } = useGetProductsQuery({});
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const visibleCount = 4;
 
-  const {
-    data: products,
-    isLoading,
-    error,
-    refetch,
-  } = useGetProductsQuery({});
-  // console.log("products", products);
+  const nextSlide = () => {
+    if (products && currentIndex + visibleCount < products.length) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
 
+  const prevSlide = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
 
-  const paginatedProducts = products?.slice(0, 4);
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-16 my-[90px]">
@@ -59,21 +63,33 @@ const YouMayAlsoLike = () => {
     );
   }
 
+  const paginatedProducts = products?.slice(currentIndex, currentIndex + visibleCount) || [];
+
   return (
     <div className="container mx-auto px-4 py-16 my-[90px]">
-      <div className="flex flex-col md:flex-row justify-between items-center mb-12">
-        <h2 className="text-4xl md:text-7xl font-semibold font-rubik text-gray-900 mb-4 md:mb-0">
-          DON'T MISS OUT <br />
-          NEW DROPS
+      <div className="flex justify-between items-center mb-8">
+        <h2 className="text-3xl md:text-5xl font-extrabold text-black tracking-wide">
+          You May Also Like
         </h2>
-        <Link href="/product">
-          <button className="bg-[#4a69e2] text-white px-6 py-3 rounded-lg font-rubik font-medium hover:bg-blue-700 transition-colors duration-300">
-            SHOP NEW DROPS
+        <div className="flex gap-3">
+          <button
+            onClick={prevSlide}
+            disabled={currentIndex === 0}
+            className="w-10 h-10 bg-gray-600 text-white rounded-md flex items-center justify-center disabled:opacity-40"
+          >
+            ‹
           </button>
-        </Link>
+          <button
+            onClick={nextSlide}
+            disabled={products ? currentIndex + visibleCount >= products.length : true}
+            className="w-10 h-10 bg-gray-300 text-black rounded-md flex items-center justify-center disabled:opacity-40"
+          >
+            ›
+          </button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 transition-all duration-500">
         {paginatedProducts.map((product: Product) => (
           <div
             key={product.id}
@@ -100,8 +116,7 @@ const YouMayAlsoLike = () => {
               </h3>
               <Link href={`/product/${product.id}`}>
                 <button className="bg-black text-white w-full py-3 rounded-lg font-rubik font-medium hover:bg-gray-800 transition-colors duration-300">
-                  VIEW PRODUCT -{" "}
-                  <span className="text-yellow-600">{product.price}</span>
+                  VIEW PRODUCT - <span className="text-yellow-600">{product.price}</span>
                 </button>
               </Link>
             </div>

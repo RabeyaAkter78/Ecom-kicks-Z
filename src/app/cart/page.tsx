@@ -4,18 +4,30 @@ import React from "react";
 import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
-import { removeFromCart, updateQuantity, clearCart } from "@/redux/feature/cart/cartSlice";
+import {
+  removeFromCart,
+  updateQuantity,
+  clearCart,
+} from "@/redux/feature/cart/cartSlice";
 import { Button, InputNumber } from "antd";
+import YouMayAlsoLike from "@/components/PageComponents/YouMayAlsoLike";
 
 const Cart = () => {
   const dispatch = useDispatch();
-  const { items, total, itemCount } = useSelector((state: RootState) => state?.cart);
+  const { items, total, itemCount } = useSelector(
+    (state: RootState) => state?.cart,
+  );
 
   const handleRemoveItem = (id: number, size?: number, color?: string) => {
     dispatch(removeFromCart({ id, size, color }));
   };
 
-  const handleUpdateQuantity = (id: number, quantity: number, size?: number, color?: string) => {
+  const handleUpdateQuantity = (
+    id: number,
+    quantity: number,
+    size?: number,
+    color?: string,
+  ) => {
     dispatch(updateQuantity({ id, quantity, size, color }));
   };
 
@@ -49,7 +61,11 @@ const Cart = () => {
               Looks like you haven't added anything to your cart yet
             </p>
             <Link href="/product">
-              <Button type="primary" size="large" className="bg-blue-600 hover:bg-blue-700">
+              <Button
+                type="primary"
+                size="large"
+                className="bg-blue-600 hover:bg-blue-700"
+              >
                 Continue Shopping
               </Button>
             </Link>
@@ -72,9 +88,16 @@ const Cart = () => {
 
           <div className="space-y-4">
             {items.map((item) => (
-              <div key={`${item.id}-${item.size}-${item.color}`} className="border border-gray-300 rounded-lg p-4">
+              <div
+                key={`${item.id}-${item.size}-${item.color}`}
+                className="border border-gray-300 rounded-lg p-4"
+              >
                 <div className="flex items-center space-x-4">
-                  <img src={item.image} alt={item.title} className="w-24 h-24 object-contain" />
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-24 h-24 object-contain"
+                  />
                   <div className="flex-1">
                     <h3 className="font-bold text-lg">{item.title}</h3>
                     <p className="text-gray-600 text-sm">{item.description}</p>
@@ -94,7 +117,12 @@ const Cart = () => {
                           max={99}
                           value={item.quantity}
                           onChange={(value) =>
-                            handleUpdateQuantity(item.id, value || 1, item.size, item.color)
+                            handleUpdateQuantity(
+                              item.id,
+                              value || 1,
+                              item.size,
+                              item.color,
+                            )
                           }
                           className="w-20"
                         />
@@ -104,7 +132,9 @@ const Cart = () => {
                           ${(item.price * item.quantity).toFixed(2)}
                         </div>
                         <button
-                          onClick={() => handleRemoveItem(item.id, item.size, item.color)}
+                          onClick={() =>
+                            handleRemoveItem(item.id, item.size, item.color)
+                          }
                           className="text-red-500 hover:text-red-600 text-sm mt-1"
                         >
                           Remove
@@ -140,6 +170,9 @@ const Cart = () => {
           </p>
         </div>
       </div>
+
+      {/* You may also like */}
+      <YouMayAlsoLike></YouMayAlsoLike>
     </div>
   );
 };

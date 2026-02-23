@@ -9,6 +9,7 @@ import {
 } from "next/dist/shared/lib/get-img-props";
 import { CiHeart } from "react-icons/ci";
 import Link from "next/link";
+import YouMayAlsoLike from "@/components/PageComponents/YouMayAlsoLike";
 
 const ProductDetails = () => {
   const params = useParams();
@@ -188,7 +189,10 @@ const ProductDetails = () => {
 
           <div className="mt-8 space-y-4">
             <div className="flex items-center justify-between gap-2">
-              <Link href="/cart" className="w-full bg-black text-white py-3 rounded-lg text-center ">
+              <Link
+                href="/cart"
+                className="w-full bg-black text-white py-3 rounded-lg text-center "
+              >
                 <button className=" font-semibold hover:bg-gray-800 transition-all">
                   ADD TO CART
                 </button>
@@ -224,6 +228,7 @@ const ProductDetails = () => {
           </div>
         </div>
       </div>
+      <YouMayAlsoLike />
     </div>
   );
 };
