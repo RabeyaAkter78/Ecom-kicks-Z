@@ -34,18 +34,16 @@ const ProductDetails = () => {
     id: product.id,
     title: product.title,
     price: product.price,
-    quantity: 1, // default 1
+    quantity: 1, 
     size: selectedSize || null,
     color: selectedColor,
     description: product.description,
     image: product.images?.[0] || "/placeholder-image.jpg",
   };
 
-  // Get current cart from localStorage
   const existingCart = localStorage.getItem("cart");
   let cart = existingCart ? JSON.parse(existingCart) : [];
 
-  // Check if item with same id + size + color already exists
   const existingIndex = cart.findIndex(
     (item: any) =>
       item.id === cartItem.id &&
@@ -54,9 +52,9 @@ const ProductDetails = () => {
   );
 
   if (existingIndex >= 0) {
-    cart[existingIndex].quantity += 1; // increase quantity if already in cart
+    cart[existingIndex].quantity += 1;
   } else {
-    cart.push(cartItem); // add new item
+    cart.push(cartItem); 
   }
 
   localStorage.setItem("cart", JSON.stringify(cart));
