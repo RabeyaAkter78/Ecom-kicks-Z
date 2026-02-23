@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useGetProductByCategoryQuery } from "@/redux/api/productsApi";
 
 const CategorySlider = () => {
-  const { data: catData, isLoading } = useGetProductByCategoryQuery({});
+  const { data: catData, isLoading ,isError, refetch} = useGetProductByCategoryQuery({});
   // console.log("catData", catData);
   const categories = catData || [];
 
@@ -28,6 +28,41 @@ const CategorySlider = () => {
       setCurrentPage((prev) => prev - 1);
     }
   };
+
+  if (isError) {
+    return (
+      <div className="container mx-auto px-4 py-16 my-[90px]">
+        <div className="text-center">
+          <div className="text-red-500 text-xl mb-4">
+            Error: Failed to fetch products
+          </div>
+          <button
+            onClick={() => refetch()}
+            className="bg-[#4a69e2] text-white px-6 py-3 rounded-lg font-rubik font-medium hover:bg-blue-700 transition-colors duration-300"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+  if (!categories?.length) {
+    return (
+      <div className="container mx-auto px-4 py-16 my-[90px]">
+        <div className="text-center">
+          <div className="text-red-500 text-xl mb-4">
+            Error: No products found
+          </div>
+          <button
+            onClick={() => refetch()}
+            className="bg-[#4a69e2] text-white px-6 py-3 rounded-lg font-rubik font-medium hover:bg-blue-700 transition-colors duration-300"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-[#1c1c1c] ">
