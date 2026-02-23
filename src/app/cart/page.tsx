@@ -3,9 +3,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useDispatch } from "react-redux";
 
-import { clearCart } from "@/redux/feature/cart/cartSlice";
 import { Button, InputNumber } from "antd";
 import YouMayAlsoLike from "@/components/PageComponents/YouMayAlsoLike";
 import Image from "next/image";
@@ -60,11 +58,6 @@ const Cart = () => {
       0,
     );
     setTotal(totalPrice);
-  };
-  const dispatch = useDispatch();
-
-  const handleClearCart = () => {
-    dispatch(clearCart());
   };
 
   if (items.length === 0) {
@@ -154,7 +147,7 @@ const Cart = () => {
                 {/* Product Info */}
                 <div className="flex-1 flex flex-col justify-between">
                   <div>
-                    <h3 className="font-bold text-lg">{item.title}</h3>
+                    <h3 className="font-bold text-2xl  font-rubik">{item.title}</h3>
                     <p className="text-gray-600 text-sm mt-1">
                       {item.description}
                     </p>
@@ -194,7 +187,7 @@ const Cart = () => {
 
                 {/* Price */}
                 <div className="mt-4 md:mt-0 md:ml-4 text-right">
-                  <div className="font-bold text-lg">
+                  <div className="font-bold text-[#4a69e2] text-2xl font-rubik">
                     ${(item.price * item.quantity).toFixed(2)}
                   </div>
                 </div>
