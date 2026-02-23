@@ -1,25 +1,44 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/no-unescaped-entities */
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "@/redux/store";
-import {
-  removeFromCart,
-  updateQuantity,
-  clearCart,
-} from "@/redux/feature/cart/cartSlice";
+import { useDispatch } from "react-redux";
+
+import { clearCart } from "@/redux/feature/cart/cartSlice";
 import { Button, InputNumber } from "antd";
 import YouMayAlsoLike from "@/components/PageComponents/YouMayAlsoLike";
+import Image from "next/image";
+import { CiHeart, CiTrash } from "react-icons/ci";
 
 const Cart = () => {
-  const dispatch = useDispatch();
-  const { items, total, itemCount } = useSelector(
-    (state: RootState) => state?.cart,
-  );
+  const [items, setItems] = useState<any[]>([]);
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    const cart = localStorage.getItem("cart");
+    const parsedCart = cart ? JSON.parse(cart) : [];
+    setItems(parsedCart);
+
+    const totalPrice = parsedCart.reduce(
+      (sum: number, item: any) => sum + item.price * item.quantity,
+      0,
+    );
+    setTotal(totalPrice);
+  }, []);
 
   const handleRemoveItem = (id: number, size?: number, color?: string) => {
-    dispatch(removeFromCart({ id, size, color }));
+    const newCart = items.filter(
+      (item) => !(item.id === id && item.size === size && item.color === color),
+    );
+    setItems(newCart);
+    localStorage.setItem("cart", JSON.stringify(newCart));
+
+    const totalPrice = newCart.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0,
+    );
+    setTotal(totalPrice);
   };
 
   const handleUpdateQuantity = (
@@ -28,8 +47,21 @@ const Cart = () => {
     size?: number,
     color?: string,
   ) => {
-    dispatch(updateQuantity({ id, quantity, size, color }));
+    const newCart = items.map((item) =>
+      item.id === id && item.size === size && item.color === color
+        ? { ...item, quantity }
+        : item,
+    );
+    setItems(newCart);
+    localStorage.setItem("cart", JSON.stringify(newCart));
+
+    const totalPrice = newCart.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0,
+    );
+    setTotal(totalPrice);
   };
+  const dispatch = useDispatch();
 
   const handleClearCart = () => {
     dispatch(clearCart());
@@ -37,7 +69,7 @@ const Cart = () => {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12 px-4">
+      <div className="min-h-screen bg-background py-12 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
           <div className="bg-white rounded-lg p-12 shadow-sm">
@@ -76,69 +108,86 @@ const Cart = () => {
   }
 
   return (
-    <div className="container mx-auto bg-gray-50 p-6 md:p-12">
-      <h1 className="text-2xl font-bold mb-2">Your Shopping Cart</h1>
-      <div className="md:flex md:space-x-8">
+    <div className="container mx-auto bg-background px-4">
+      <div className="my-8 font-rubik">
+        <h1 className="text-2xl font-bold mb-2 font-rubik/32">
+          Saving to celebrate{" "}
+        </h1>
+        <p className="text-gray-600">
+          Enjoy up to 60% off thousands of styles during the End of Year sale -
+          while suppiles last. No code needed.
+        </p>
+        <Link href="#" className="text-gray-500">
+          {" "}
+          Join us
+        </Link>{" "}
+        or{" "}
+        <Link href="#" className="text-gray-500">
+          Sign-in
+        </Link>
+      </div>
+      <div className="flex flex-col md:flex-row gap-5 md:gap-10 ">
         {/* Cart Items */}
-        <div className="flex-1 bg-white p-6 rounded-lg shadow-md mb-6 md:mb-0">
-          <h2 className="text-xl font-bold mb-4">Your Bag</h2>
+        <div className="flex-1 bg-white p-6 rounded-2xl shadow-md mb-6 md:mb-0">
+          <h2 className="text-3xl font-bold mb-4 font-rubik">Your Bag</h2>
           <p className="text-gray-500 mb-4">
-            Items in your bag are not reserved — checkout now to secure them.
+            Items in your bag not reserved- check out now to make them yours.
           </p>
 
           <div className="space-y-4">
             {items.map((item) => (
               <div
                 key={`${item.id}-${item.size}-${item.color}`}
-                className="border border-gray-300 rounded-lg p-4"
+                className=" p-4"
               >
-                <div className="flex items-center space-x-4">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-24 h-24 object-contain"
-                  />
-                  <div className="flex-1">
-                    <h3 className="font-bold text-lg">{item.title}</h3>
-                    <p className="text-gray-600 text-sm">{item.description}</p>
-                    <div className="flex items-center space-x-2 mt-2">
-                      <span className="text-sm">Color:</span>
-                      <span
-                        className="inline-block w-4 h-4 rounded-full"
-                        style={{ backgroundColor: item.color }}
-                      />
-                      <span className="text-sm ml-2">Size: {item.size}</span>
-                    </div>
-                    <div className="flex items-center justify-between mt-4">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-sm">Quantity:</span>
-                        <InputNumber
-                          min={1}
-                          max={99}
-                          value={item.quantity}
-                          onChange={(value) =>
-                            handleUpdateQuantity(
-                              item.id,
-                              value || 1,
-                              item.size,
-                              item.color,
-                            )
-                          }
-                          className="w-20"
-                        />
-                      </div>
-                      <div className="text-right">
-                        <div className="font-bold text-lg">
-                          ${(item.price * item.quantity).toFixed(2)}
+                <div className="grid grid-cols-1 md:grid-cols-2 justify-center items-start ">
+                  <div className="flex justify-between items-start gap-5">
+                    <Image
+                      width={207}
+                      height={225}
+                      src={item.image}
+                      alt={item.title}
+                      className="w-[207] h-[225px] object-contain rounded-3xl "
+                    />
+
+                    <div className="">
+                      <h3 className="font-bold text-lg">{item.title}</h3>
+                      <p className="text-gray-600 text-sm">
+                        {item.description}
+                      </p>
+                      <div className="flex items-center space-x-2 mt-2">
+                        <span className="text-sm ml-2">Size: {item.size}</span>
+                        <div className="flex items-center justify-between ">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-sm">Quantity:</span>
+                            <InputNumber
+                              min={1}
+                              max={99}
+                              value={item.quantity}
+                              onChange={(value) =>
+                                handleUpdateQuantity(
+                                  item.id,
+                                  value || 1,
+                                  item.size,
+                                  item.color,
+                                )
+                              }
+                              className="w-20"
+                            />
+                          </div>
                         </div>
-                        <button
-                          onClick={() =>
-                            handleRemoveItem(item.id, item.size, item.color)
-                          }
-                          className="text-red-500 hover:text-red-600 text-sm mt-1"
-                        >
-                          Remove
-                        </button>
+                      </div>
+                      <div className="flex items-center space-x-2 mt-5">
+                        <CiHeart />
+                        <CiTrash />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="text-right">
+                      <div className="font-bold text-lg">
+                        ${(item.price * item.quantity).toFixed(2)}
                       </div>
                     </div>
                   </div>
@@ -147,30 +196,37 @@ const Cart = () => {
             ))}
           </div>
 
-          <div className="mt-6 flex justify-between items-center">
-            <Button danger onClick={handleClearCart}>
-              Clear Cart
-            </Button>
-            <div className="font-bold text-lg">Total: ${total.toFixed(2)}</div>
-          </div>
+       
         </div>
 
         {/* Order Summary */}
         <div className="w-full md:w-1/3 bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-bold mb-4">Order Summary</h2>
+          <h2 className="text-2xl font-rubik font-bold mb-4">Order Summary</h2>
           <div className="flex justify-between mb-2">
-            <span className="font-medium">{itemCount} Items</span>
+            <span className="font-medium">{items.length} ITEM</span>
             <span>${total.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between mb-2">
+            <span className="font-medium"> Delivery </span>
+            <span>${total.toFixed(2)}</span>
+          </div>
+
+          <div className="flex justify-between mb-2">
+            <span className="font-medium"> Sales Tax</span>
+            <span> - </span>
+          </div>
+          <div className="flex justify-between mb-2 font-bold text-xl font-rubik">
+            <span className="font-bold text-xl font-rubik"> Total</span>
+            <span>$ {total.toFixed(2)} </span>
           </div>
           <button className="w-full bg-black text-white p-3 rounded-lg mb-4 hover:bg-gray-900 transition">
             Checkout
           </button>
-          <p className="text-gray-600 underline text-center cursor-pointer">
+          <p className="text-gray-600 underline  cursor-pointer">
             Apply a promo code
           </p>
         </div>
       </div>
-
       {/* You may also like */}
       <YouMayAlsoLike></YouMayAlsoLike>
     </div>

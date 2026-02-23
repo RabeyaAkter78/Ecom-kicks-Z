@@ -1,17 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable prefer-const */
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useGetProductByIdQuery } from "@/redux/api/productsApi";
 import {
   StaticImageData,
   StaticImport,
 } from "next/dist/shared/lib/get-img-props";
 import { CiHeart } from "react-icons/ci";
-import Link from "next/link";
 import YouMayAlsoLike from "@/components/PageComponents/YouMayAlsoLike";
 
 const ProductDetails = () => {
+  const router = useRouter();
   const params = useParams();
   const productId = params.id as string;
   const colors = ["#1F2937", "#6B8E6E"];
@@ -25,6 +27,42 @@ const ProductDetails = () => {
   } = useGetProductByIdQuery(parseInt(productId));
 
   const [selectedSize, setSelectedSize] = useState<number | null>(38);
+ const handleAddToCart = () => {
+  if (!product) return;
+
+  const cartItem = {
+    id: product.id,
+    title: product.title,
+    price: product.price,
+    quantity: 1, // default 1
+    size: selectedSize || null,
+    color: selectedColor,
+    description: product.description,
+    image: product.images?.[0] || "/placeholder-image.jpg",
+  };
+
+  // Get current cart from localStorage
+  const existingCart = localStorage.getItem("cart");
+  let cart = existingCart ? JSON.parse(existingCart) : [];
+
+  // Check if item with same id + size + color already exists
+  const existingIndex = cart.findIndex(
+    (item: any) =>
+      item.id === cartItem.id &&
+      item.size === cartItem.size &&
+      item.color === cartItem.color
+  );
+
+  if (existingIndex >= 0) {
+    cart[existingIndex].quantity += 1; // increase quantity if already in cart
+  } else {
+    cart.push(cartItem); // add new item
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+
+  router.push("/cart");
+};
 
   if (isLoading) {
     return (
@@ -189,14 +227,12 @@ const ProductDetails = () => {
 
           <div className="mt-8 space-y-4">
             <div className="flex items-center justify-between gap-2">
-              <Link
-                href="/cart"
-                className="w-full bg-black text-white py-3 rounded-lg text-center "
+              <button
+                onClick={handleAddToCart}
+                className="w-full bg-black text-white py-3 rounded-lg text-center  font-semibold hover:bg-gray-800 transition-all"
               >
-                <button className=" font-semibold hover:bg-gray-800 transition-all">
-                  ADD TO CART
-                </button>
-              </Link>
+                ADD TO CART
+              </button>
               <button className="px-4 bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-all">
                 <CiHeart className="text-2xl cursor-pointer" />
               </button>
