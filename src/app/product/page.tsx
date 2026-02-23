@@ -32,7 +32,8 @@ const Products = () => {
   const {
     data: products,
     isLoading,
-    error,
+    isError,
+
     refetch,
   } = useGetProductsQuery({ page, limit });
   // console.log("products", products);
@@ -40,10 +41,7 @@ const Products = () => {
     setPage(page);
   };
 
-  const paginatedProducts = products?.slice(
-  (page - 1) * limit,
-  page * limit,
-);
+  const paginatedProducts = products?.slice((page - 1) * limit, page * limit);
   // const totalItems = products.length;
   if (isLoading) {
     return (
@@ -55,12 +53,29 @@ const Products = () => {
     );
   }
 
-  if (error) {
+  if (isError) {
     return (
       <div className="container mx-auto px-4 py-16 my-[90px]">
         <div className="text-center">
           <div className="text-red-500 text-xl mb-4">
             Error: Failed to fetch products
+          </div>
+          <button
+            onClick={() => refetch()}
+            className="bg-[#4a69e2] text-white px-6 py-3 rounded-lg font-rubik font-medium hover:bg-blue-700 transition-colors duration-300"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+  if (!products?.length) {
+    return (
+      <div className="container mx-auto px-4 py-16 my-[90px]">
+        <div className="text-center">
+          <div className="text-red-500 text-xl mb-4">
+            Error: No products found
           </div>
           <button
             onClick={() => refetch()}
@@ -127,7 +142,7 @@ const Products = () => {
       <div className="flex justify-center mt-12">
         <Pagination
           current={page}
-          total={products?.length || 0} 
+          total={products?.length || 0}
           pageSize={limit}
           onChange={handlePageChange}
           showSizeChanger={false}
