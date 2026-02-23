@@ -34,11 +34,9 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Bottom Section - Dark */}
           <div className=" bg-[#1C1C1C] rounded-t-3xl p-8 md:p-12 text-white -mt-10 z-50">
             <div className="container mx-auto md:mb-72">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-                {/* About Us */}
                 <div>
                   <h3 className="text-xl md:text-2xl font-bold mb-4 text-orange-400 font-rubik">
                     About us
@@ -49,7 +47,6 @@ const Footer = () => {
                   </p>
                 </div>
 
-                {/* Categories */}
                 <div>
                   <h3 className="text-xl font-bold mb-4">Categories</h3>
                   <ul className="space-y-2 text-gray-400">
@@ -74,7 +71,6 @@ const Footer = () => {
                   </ul>
                 </div>
 
-                {/* Company */}
                 <div>
                   <h3 className="text-xl font-bold mb-4">Company</h3>
                   <ul className="space-y-2 text-gray-400">
@@ -90,8 +86,7 @@ const Footer = () => {
                   </ul>
                 </div>
 
-                {/* Follow Us */}
-                {/* Follow Us */}
+           
                 <div>
                   <h3 className="text-white font-bold text-lg mb-4">
                     Follow us
@@ -129,7 +124,6 @@ const Footer = () => {
                 </div>
               </div>
             </div>
-            {/* Large KICKS text overlay */}
             <div className="absolute bottom-0 left-0 w-full px-10 ">
               <Image
                 src={f2}
@@ -141,7 +135,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Copyright */}
         <div className="py-4 z-10 text-center text-gray-500 text-sm">
           &copy; All rights reserved
         </div>
